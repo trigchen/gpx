@@ -9,4 +9,14 @@ So these classes are self-contained, no extra jar libraries needed.
 2. GPX.endTime(), return last time of waypoint.
 3. GPX.maxSpeed(), return maximum speed of whole gpx.
 
+# gps
+bare-bones objects for representing geographical and time data, like that provided by GPS devices.
+Defines object for point and has provides the basic computations
+for computing distance and bearing.
+
+# xml
+An XML library on top of SAX.
+
+The main interface in this package is XMLElementHandler, which determines how to process a single XML element.  Child elements are delegated to other XMLElementHandlers.
+
 
