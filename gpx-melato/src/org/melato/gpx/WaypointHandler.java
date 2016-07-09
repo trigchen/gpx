@@ -43,18 +43,18 @@ class WaypointHandler extends XMLMappingHandler {
 	LinkHandler linkHandler = new LinkHandler(links);
 	Waypoint waypoint;
 
-	static float getFloat(XMLTag tag, String attribute) {
-		String s = tag.getAttribute(attribute);
+	static float getFloat(final XMLTag tag, final String attribute) {
+		final String s = tag.getAttribute(attribute);
 		return Float.parseFloat(s);
 	}
 
-	static Waypoint getWaypoint(XMLTag tag) {
-		float lat = getFloat(tag, GPX.LAT);
-		float lon = getFloat(tag, GPX.LON);
+	static Waypoint getWaypoint(final XMLTag tag) {
+		final float lat = getFloat(tag, GPX.LAT);
+		final float lon = getFloat(tag, GPX.LON);
 		return new Waypoint(lat, lon);
 	}
 
-	public WaypointHandler(Collection<Waypoint> waypoints) {
+	public WaypointHandler(final Collection<Waypoint> waypoints) {
 		this.waypoints = waypoints;
 		setHandler(GPX.NAME, nameHandler);
 		setHandler(GPX.DESC, descHandler);
@@ -63,10 +63,14 @@ class WaypointHandler extends XMLMappingHandler {
 		setHandler(GPX.LINK, linkHandler);
 		setHandler(GPX.ELE, eleHandler);
 		setHandler(GPX.TIME, timeHandler);
-		XMLMappingHandler extensions = new XMLMappingHandler();
+		//
+		setHandler(GPX.SPEED, speedHandler);
+		setHandler(GPX.BEARING, bearingHandler);
+		//
+		final XMLMappingHandler extensions = new XMLMappingHandler();
 		setHandler(GPX.EXTENSIONS, extensions);
-		extensions.setHandler(GPX.SPEED, speedHandler);
-		extensions.setHandler(GPX.COURSE, bearingHandler);
+		extensions.setHandler(GPX.SPEED_EXT, speedHandler);
+		extensions.setHandler(GPX.COURSE_EXT, bearingHandler);
 	}
 
 	@Override
@@ -84,20 +88,22 @@ class WaypointHandler extends XMLMappingHandler {
 		}
 	}
 
-	private float getFloat(XMLStringHandler stringHandler) {
+	private float getFloat(final XMLStringHandler stringHandler) {
 		String s = stringHandler.getText();
-		if (s == null)
+		if (s == null) {
 			return Float.NaN;
+		}
 		s = s.trim();
-		if (s.length() == 0)
+		if (s.length() == 0) {
 			return Float.NaN;
+		}
 		return Float.parseFloat(s);
 	}
 
 	@Override
-	public void start(XMLTag tag) throws SAXException {
-		float lat = getFloat(tag, GPX.LAT);
-		float lon = getFloat(tag, GPX.LON);
+	public void start(final XMLTag tag) throws SAXException {
+		final float lat = getFloat(tag, GPX.LAT);
+		final float lon = getFloat(tag, GPX.LON);
 		waypoint = new Waypoint(lat, lon);
 		waypoints.add(waypoint);
 		links.clear();

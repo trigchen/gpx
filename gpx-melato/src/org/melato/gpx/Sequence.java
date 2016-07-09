@@ -136,13 +136,19 @@ public class Sequence implements Cloneable {
 		final List<Waypoint> points = getWaypoints();
 		final int size = points.size();
 		if (size > 1) {
-			for (int i = 0; i < (size - 1); i++) {
-				final float distance = Earth.distance(points.get(i), points.get(i + 1));
-				final float duration = PointTime.timeDifference(points.get(i), points.get(i + 1));
-				if (duration > 0.0F) {
-					final float speed = (distance / duration) * 3.6F;
-					if (speed > maxSpeed) {
-						maxSpeed = speed;
+			for (final Waypoint p : points) {
+				final float speed = p.getSpeed();
+				maxSpeed = (maxSpeed < speed) ? speed : maxSpeed;
+			}
+			if (maxSpeed == 0.0F) {
+				for (int i = 0; i < (size - 1); i++) {
+					final float distance = Earth.distance(points.get(i), points.get(i + 1));
+					final float duration = PointTime.timeDifference(points.get(i), points.get(i + 1));
+					if (duration > 0.0F) {
+						final float speed = (distance / duration) * 3.6F;
+						if (speed > maxSpeed) {
+							maxSpeed = speed;
+						}
 					}
 				}
 			}

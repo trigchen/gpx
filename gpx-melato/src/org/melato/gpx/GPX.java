@@ -52,8 +52,10 @@ public class GPX {
 	public static final String LON = "lon";
 	public static final String ELE = "ele";
 	public static final String TIME = "time";
-	public static final String SPEED = "gpx10:speed";
-	public static final String COURSE = "gpx10:course";
+	public static final String SPEED = "speed";
+	public static final String BEARING = "bearing";
+	public static final String SPEED_EXT = "gpx10:speed";
+	public static final String COURSE_EXT = "gpx10:course";
 	public static final String WPT = "wpt";
 	public static final String RTE = "rte";
 

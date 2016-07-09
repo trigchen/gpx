@@ -67,8 +67,8 @@ public class GPXXmlWriter extends GPXSerializer {
 		float bearing = p.getBearing();
 		if (!Float.isNaN(speed) || !Float.isNaN(bearing)) {
 			xml.tagOpen(GPX.EXTENSIONS);
-			write(xml, GPX.SPEED, speed);
-			write(xml, GPX.COURSE, bearing);
+			write(xml, GPX.SPEED_EXT, speed);
+			write(xml, GPX.COURSE_EXT, bearing);
 			xml.tagEnd(GPX.EXTENSIONS);
 		}
 		write(xml, GPX.TYPE, p.getType());
