@@ -31,41 +31,46 @@ public class Iso8106Date {
 			.compile("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})T([0-9]{1,2}):?([0-9]{2}):?([0-9\\.]*)([Z+-]?.*)");
 	static final Pattern tzPattern = Pattern.compile("([-+])([0-9]{2}):([0-9]{2})");
 
-	public static Date parseDate(String s) {
-		long time = parseTime(s);
-		if (time != 0)
+	public static Date parseDate(final String s) {
+		final long time = parseTime(s);
+		if (time != 0) {
 			return new Date(time);
+		}
 		return null;
 	}
 
 	/**
-	 * Parse a GPX date (ISO 8601).
-	 * Example: 2011-09-25T10:17:37Z
-	 * 
+	 * Parse a GPX date (ISO 8601). Example: 2011-09-25T10:17:37Z
+	 *
 	 * @param s
 	 */
 	public static long parseTime(String s) {
-		if (s == null)
+		if (s == null) {
 			return 0;
+		}
 		s = s.trim();
-		if (s.length() == 0)
+		if (s.length() == 0) {
 			return 0;
-		Matcher matcher = datePattern.matcher(s);
+		}
+		// for case 2011-09-25 10:17:37
+		if ((s.length() == 19) && (s.charAt(10) == ' ')) {
+			s = s.replace(' ', 'T');
+		}
+		final Matcher matcher = datePattern.matcher(s);
 		if (matcher.matches()) {
-			int year = Integer.parseInt(matcher.group(1));
-			int month = Integer.parseInt(matcher.group(2));
-			int day = Integer.parseInt(matcher.group(3));
-			int hour = Integer.parseInt(matcher.group(4));
-			int minute = Integer.parseInt(matcher.group(5));
-			float second = Float.parseFloat(matcher.group(6));
-			int millisecond = Math.round(second * 1000);
-			boolean isUtc = "Z".equals(matcher.group(7));
-			GregorianCalendar calendar = new GregorianCalendar(year, month - 1, day, hour, minute);
+			final int year = Integer.parseInt(matcher.group(1));
+			final int month = Integer.parseInt(matcher.group(2));
+			final int day = Integer.parseInt(matcher.group(3));
+			final int hour = Integer.parseInt(matcher.group(4));
+			final int minute = Integer.parseInt(matcher.group(5));
+			final float second = Float.parseFloat(matcher.group(6));
+			final int millisecond = Math.round(second * 1000);
+			final boolean isUtc = "Z".equals(matcher.group(7));
+			final GregorianCalendar calendar = new GregorianCalendar(year, month - 1, day, hour, minute);
 			if (isUtc) {
 				calendar.setTimeZone(UTC);
-			}
-			else {
-				int minutes = parseTimeZone(matcher.group(7));
+			} else {
+				final int minutes = parseTimeZone(matcher.group(7));
 				if (minutes != 0) {
 					calendar.setTimeZone(UTC);
 					calendar.add(Calendar.MINUTE, -minutes);
@@ -78,17 +83,17 @@ public class Iso8106Date {
 		throw new IllegalArgumentException("Invalid date: " + s);
 	}
 
-	public static int parseTimeZone(String tz) {
+	public static int parseTimeZone(final String tz) {
 		if ("Z".equals(tz)) {
 			return 0;
 		}
 		if (tz.length() == 0) {
 			return 0;
 		}
-		Matcher matcher = tzPattern.matcher(tz);
+		final Matcher matcher = tzPattern.matcher(tz);
 		if (matcher.matches()) {
-			int minutes = 60 * Integer.parseInt(matcher.group(2)) + Integer.parseInt(matcher.group(3));
-			String sign = matcher.group(1);
+			int minutes = (60 * Integer.parseInt(matcher.group(2))) + Integer.parseInt(matcher.group(3));
+			final String sign = matcher.group(1);
 			if ("-".equals(sign)) {
 				minutes = -minutes;
 			}

@@ -33,50 +33,46 @@ import org.xml.sax.SAXException;
 
 /**
  * Read an xml gpx file.
- * 
+ *
  * @author alex
  *
  */
 public class GPXParser {
-	private IOException exception(Object file, Exception e) {
-		return new IOException("Cannot parse " + file + " exception=" + e);
-	}
-
 	/**
 	 * Parse a GPX file and return the parsed GPX object.
-	 * 
+	 *
 	 * @param file
 	 * @return
 	 * @throws IOException
 	 */
-	public GPX parse(File file) throws IOException {
+	public GPX parse(final File file) throws IOException {
 		try {
-			InputStream input = new FileInputStream(file);
+			final InputStream input = new FileInputStream(file);
 			return parse(input);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw exception(file, e);
-		} catch (RuntimeException e) {
+		} catch (final RuntimeException e) {
 			throw exception(file, e);
 		}
 	}
 
 	/**
 	 * Parse a GPX file (stream) and return the parsed GPX object.
-	 * 
+	 *
 	 * @param input
 	 * @return
 	 * @throws IOException
 	 */
-	public GPX parse(InputStream input) throws IOException {
-		XMLMappingHandler rootHandler = new XMLMappingHandler();
-		XMLMappingHandler gpxHandler = new XMLMappingHandler();
+	public GPX parse(final InputStream input) throws IOException {
+		final XMLMappingHandler rootHandler = new XMLMappingHandler();
+		final XMLMappingHandler gpxHandler = new XMLMappingHandler();
 		rootHandler.setHandler(GPX.GPX, gpxHandler);
-		RouteHandler routeHandler = new RouteHandler();
-		List<Waypoint> waypoints = new ArrayList<Waypoint>();
-		WaypointHandler waypointHandler = new WaypointHandler(waypoints);
-		TrackHandler trackHandler = new TrackHandler();
-		GPX gpx = new GPX();
-		MetadataHandler metadataHandler = new MetadataHandler(gpx);
+		final RouteHandler routeHandler = new RouteHandler();
+		final List<Waypoint> waypoints = new ArrayList<Waypoint>();
+		final WaypointHandler waypointHandler = new WaypointHandler(waypoints);
+		final TrackHandler trackHandler = new TrackHandler();
+		final GPX gpx = new GPX();
+		final MetadataHandler metadataHandler = new MetadataHandler(gpx);
 		gpxHandler.setHandler(GPX.RTE, routeHandler);
 		gpxHandler.setHandler(GPX.TRK, trackHandler);
 		gpxHandler.setHandler(GPX.WPT, waypointHandler);
@@ -87,76 +83,79 @@ public class GPXParser {
 			gpx.tracks = trackHandler.getTracks();
 			gpx.waypoints = waypoints;
 			return gpx;
-		} catch (SAXException e) {
+		} catch (final SAXException e) {
 			throw new RuntimeException(e);
-		}
-		finally {
+		} finally {
 			input.close();
 		}
 	}
 
 	/**
 	 * Parse a file from a URL
-	 * 
+	 *
 	 * @param url
 	 * @return
 	 * @throws IOException
 	 */
-	public GPX parse(URL url) throws IOException {
+	public GPX parse(final URL url) throws IOException {
 		try {
-			InputStream input = url.openStream();
+			final InputStream input = url.openStream();
 			return parse(input);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw exception(url, e);
-		} catch (RuntimeException e) {
+		} catch (final RuntimeException e) {
 			throw exception(url, e);
 		}
 	}
 
 	/**
 	 * Parse the waypoints from a GPX file and add them to the given collection.
-	 * This method can be used for a one-pass parsing of a large GPX file that does not store the result in memory,
-	 * if the user-provided collection does not store the items added to it.
-	 * Use to do a linear search from a large set of waypoints stored in a file.
-	 * Only the plain waypoints are parsed without being stored in memory.
-	 * It parses all three types of waypoints (waypoints, routes, track segments).
-	 * 
+	 * This method can be used for a one-pass parsing of a large GPX file that does
+	 * not store the result in memory, if the user-provided collection does not
+	 * store the items added to it. Use to do a linear search from a large set of
+	 * waypoints stored in a file. Only the plain waypoints are parsed without being
+	 * stored in memory. It parses all three types of waypoints (waypoints, routes,
+	 * track segments).
+	 *
 	 * @param input
 	 *            The file (stream) to parse
 	 * @param result
 	 *            The collection to add the waypoints to.
 	 * @throws IOException
 	 */
-	public void parseWaypoints(InputStream input, Collection<Waypoint> result) throws IOException {
-		XMLMappingHandler rootHandler = new XMLMappingHandler();
-		XMLMappingHandler gpxHandler = new XMLMappingHandler();
+	public void parseWaypoints(final InputStream input, final Collection<Waypoint> result) throws IOException {
+		final XMLMappingHandler rootHandler = new XMLMappingHandler();
+		final XMLMappingHandler gpxHandler = new XMLMappingHandler();
 		rootHandler.setHandler(GPX.GPX, gpxHandler);
-		RouteHandler routeHandler = new RouteHandler();
-		WaypointHandler waypointHandler = new WaypointHandler(result);
-		TrackHandler trackHandler = new TrackHandler();
+		final RouteHandler routeHandler = new RouteHandler();
+		final WaypointHandler waypointHandler = new WaypointHandler(result);
+		final TrackHandler trackHandler = new TrackHandler();
 		gpxHandler.setHandler(GPX.RTE, routeHandler);
 		gpxHandler.setHandler(GPX.TRK, trackHandler);
 		gpxHandler.setHandler(GPX.WPT, waypointHandler);
 		try {
 			XMLDelegator.parse(rootHandler, input);
-			for (Route route : routeHandler.getRoutes()) {
-				for (Waypoint p : route.path.getWaypoints()) {
+			for (final Route route : routeHandler.getRoutes()) {
+				for (final Waypoint p : route.path.getWaypoints()) {
 					result.add(p);
 				}
 			}
-			for (Track route : trackHandler.getTracks()) {
-				for (Sequence sequence : route.getSegments()) {
-					for (Waypoint p : sequence.getWaypoints()) {
+			for (final Track route : trackHandler.getTracks()) {
+				for (final Sequence sequence : route.getSegments()) {
+					for (final Waypoint p : sequence.getWaypoints()) {
 						result.add(p);
 					}
 				}
 			}
-		} catch (SAXException e) {
+		} catch (final SAXException e) {
 			throw new RuntimeException(e);
-		}
-		finally {
+		} finally {
 			input.close();
 		}
+	}
+
+	private IOException exception(final Object file, final Exception e) {
+		return new IOException("Cannot parse " + file + " exception=" + e);
 	}
 
 }
