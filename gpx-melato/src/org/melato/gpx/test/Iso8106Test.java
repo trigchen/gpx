@@ -29,41 +29,54 @@ import org.melato.gpx.Iso8106Date;
 
 public class Iso8106Test {
 
-	public @Test void parseDateLocal() {
-		String datestring = "2014-08-10T04:31:58";
-		Date date = Iso8106Date.parseDate(datestring);
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	@Test
+	public void parseDateLocal() {
+		final String datestring = "2014-08-10T04:31:58";
+		final Date date = Iso8106Date.parseDate(datestring);
+		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		// format.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Assert.assertEquals("2014-08-10T04:31:58", format.format(date));
 	}
 
-	public @Test void parseDateTZPlus() {
-		String datestring = "2011-10-1T10:20:30+05:00";
-		Date date = Iso8106Date.parseDate(datestring);
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	@Test
+	public void parseDateTime() {
+		final String datestring = "2011-10-01 10:20:30";
+		final Date date = Iso8106Date.parseDate(datestring);
+		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Assert.assertEquals("2011-10-01 10:20:30", format.format(date));
+	}
+
+	@Test
+	public void parseDateTZPlus() {
+		final String datestring = "2011-10-1T10:20:30+05:00";
+		final Date date = Iso8106Date.parseDate(datestring);
+		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		format.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Assert.assertEquals("2011-10-01T05:20:30", format.format(date));
 	}
 
-	public @Test void parseDateUTC() {
-		String datestring = "2011-09-25T13:24:35Z";
-		Date date = Iso8106Date.parseDate(datestring);
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	@Test
+	public void parseDateUTC() {
+		final String datestring = "2011-09-25T13:24:35Z";
+		final Date date = Iso8106Date.parseDate(datestring);
+		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		format.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Assert.assertEquals("2011-09-25T13:24:35", format.format(date));
 	}
 
-	public @Test void parseDateUTC1() {
-		String datestring = "2011-10-1T10:20:30Z";
-		Date date = Iso8106Date.parseDate(datestring);
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	@Test
+	public void parseDateUTC1() {
+		final String datestring = "2011-10-1T10:20:30Z";
+		final Date date = Iso8106Date.parseDate(datestring);
+		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		format.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Assert.assertEquals("2011-10-01T10:20:30", format.format(date));
 	}
 
-	public @Test void parseTZ() {
-		String tzstring = "+05:00";
-		int minutes = Iso8106Date.parseTimeZone(tzstring);
+	@Test
+	public void parseTZ() {
+		final String tzstring = "+05:00";
+		final int minutes = Iso8106Date.parseTimeZone(tzstring);
 		Assert.assertEquals(300, minutes);
 	}
 }

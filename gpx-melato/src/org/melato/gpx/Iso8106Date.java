@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 public class Iso8106Date {
 	static final TimeZone UTC = TimeZone.getTimeZone("GMT");
 	static final Pattern datePattern = Pattern
-			.compile("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})T([0-9]{1,2}):?([0-9]{2}):?([0-9\\.]*)([Z+-]?.*)");
+			.compile("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})[T|\\s]([0-9]{1,2}):?([0-9]{2}):?([0-9\\.]*)([Z+-]?.*)");
 	static final Pattern tzPattern = Pattern.compile("([-+])([0-9]{2}):([0-9]{2})");
 
 	public static Date parseDate(final String s) {
@@ -52,10 +52,7 @@ public class Iso8106Date {
 		if (s.length() == 0) {
 			return 0;
 		}
-		// for case 2011-09-25 10:17:37
-		if ((s.length() == 19) && (s.charAt(10) == ' ')) {
-			s = s.replace(' ', 'T');
-		}
+
 		final Matcher matcher = datePattern.matcher(s);
 		if (matcher.matches()) {
 			final int year = Integer.parseInt(matcher.group(1));
